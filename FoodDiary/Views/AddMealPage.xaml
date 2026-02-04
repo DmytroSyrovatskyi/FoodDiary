@@ -1,0 +1,47 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.AddMealPage"
+             x:DataType="viewModels:AddMealViewModel"
+             Title="Dodaj Nowy Posiłek">
+
+    <!-- Słownik zasobów z konwerterem do odwracania wartości logicznej -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Główny układ pionowy strony z odstępami i paddingiem -->
+    <VerticalStackLayout Spacing="15" Padding="20" VerticalOptions="Center">
+        <!-- Nagłówek strony -->
+        <Label 
+            Text="Wybierz typ posiłku"
+            FontSize="Title"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <!-- Ramka z wyborem typu posiłku -->
+        <Frame Padding="10" CornerRadius="8" Margin="0,10" BorderColor="LightGray">
+            <Picker 
+                Title="Typ posiłku"
+                ItemsSource="{Binding MealTypes}"
+                SelectedItem="{Binding SelectedMealType}" />
+        </Frame>
+
+        <!-- Wskaźnik ładowania podczas zapisu posiłku -->
+        <ActivityIndicator IsRunning="{Binding IsSaving}" IsVisible="{Binding IsSaving}" HorizontalOptions="Center" />
+
+        <!-- Przycisk do zapisania posiłku i przejścia dalej -->
+        <Button 
+            Text="Zapisz i kontynuuj"
+            Command="{Binding SaveCommand}"
+            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+            HorizontalOptions="Fill"
+            Margin="0,10,0,0"
+            HeightRequest="45"
+            CornerRadius="8" />
+
+    </VerticalStackLayout>
+</ContentPage>

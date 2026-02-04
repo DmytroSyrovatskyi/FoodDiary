@@ -1,0 +1,67 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.DailySummaryReportPage"
+             x:DataType="viewModels:DailySummaryReportViewModel"
+             Title="Raport Dzienny">
+
+    <!-- Słownik zasobów z konwerterem do sprawdzania, czy obiekt nie jest null -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ObjectToBoolConverter x:Key="ObjectToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Główny układ pionowy strony z odstępami i paddingiem -->
+    <VerticalStackLayout Spacing="15" Padding="20">
+        <!-- Nagłówek i wybór daty do wyszukania podsumowania -->
+        <Label Text="Wybierz datę do wyszukania" HorizontalOptions="Center" FontAttributes="Bold" />
+        <DatePicker Date="{Binding SelectedDate}" />
+        <Button Text="Wyszukaj Podsumowanie" Command="{Binding SearchCommand}" />
+
+        <!-- Sekcja z wynikami. Widoczna tylko, gdy znaleziono podsumowanie (FoundSummary != null) -->
+        <Frame CornerRadius="10" Padding="15" BorderColor="LightGray" IsVisible="{Binding FoundSummary, Converter={StaticResource ObjectToBoolConverter}}">
+            <VerticalStackLayout>
+                <Label Text="Podsumowanie Dzienne" FontSize="Title" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <!-- Wyświetlanie sformatowanej daty znalezionego podsumowania -->
+                <Label Text="{Binding FormattedFoundDate}" HorizontalOptions="Center" TextColor="Gray"/>
+
+                <!-- Tabela z wartościami odżywczymi -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="5" Margin="0,15,0,0">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Kalorie:" HorizontalOptions="End" FontAttributes="Bold"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding FoundSummary.TotalCalories, StringFormat='{0:F0} kcal'}" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="Białko:" HorizontalOptions="End" />
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding FoundSummary.TotalProtein, StringFormat='{0:F1} g'}" />
+                    <Label Grid.Row="2" Grid.Column="0" Text="Tłuszcz:" HorizontalOptions="End" />
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding FoundSummary.TotalFat, StringFormat='{0:F1} g'}" />
+                    <Label Grid.Row="3" Grid.Column="0" Text="Węglowodany:" HorizontalOptions="End" />
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding FoundSummary.TotalCarbohydrates, StringFormat='{0:F1} g'}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Komunikat "Brak danych". Widoczny tylko, gdy nie znaleziono podsumowania po wyszukaniu -->
+        <Label Text="Brak danych dla wybranego dnia.">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <!-- Domyślnie etykieta jest niewidoczna -->
+                    <Setter Property="IsVisible" Value="False" />
+                    <Setter Property="HorizontalOptions" Value="Center" />
+                    <Setter Property="TextColor" Value="Gray" />
+                </Style>
+            </Label.Style>
+            <Label.Triggers>
+                <!-- MultiTrigger: etykieta widoczna tylko, gdy WasSearched == true i FoundSummary == null -->
+                <MultiTrigger TargetType="Label">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding WasSearched}" Value="True" />
+                        <BindingCondition Binding="{Binding FoundSummary}" Value="{x:Null}" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True" />
+                </MultiTrigger>
+            </Label.Triggers>
+        </Label>
+
+    </VerticalStackLayout>
+</ContentPage>

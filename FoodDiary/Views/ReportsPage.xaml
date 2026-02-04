@@ -1,0 +1,31 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodDiary.Views.ReportsPage"
+             Title="Raporty">
+
+    <!-- Główny układ pionowy strony z odstępami i paddingiem -->
+    <VerticalStackLayout Spacing="15" Padding="30" VerticalOptions="Center">
+
+        <!-- Nagłówek strony z tytułem sekcji raportów -->
+        <Label 
+            Text="Wybierz Raport"
+            FontSize="Title"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <!-- Przycisk do przejścia do raportu produktów spożywczych -->
+        <Button 
+            x:Name="FoodItemReportButton"
+            Text="Raport Produktów Spożywczych"
+            Clicked="FoodItemReportButton_Clicked"
+            HorizontalOptions="Fill" />
+
+        <!-- Przycisk do przejścia do raportu dziennego po dacie -->
+        <Button 
+            x:Name="DailySummaryReportButton"
+            Text="Raport Dzienny po Dacie"
+            Clicked="DailySummaryReportButton_Clicked"
+            HorizontalOptions="Fill" />
+
+    </VerticalStackLayout>
+</ContentPage>

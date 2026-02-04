@@ -1,0 +1,44 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.ProfilePage"
+             x:DataType="viewModels:ProfileViewModel"
+             Title="Mój Profil">
+
+    <!-- Słownik zasobów z konwerterem do sprawdzania, czy string nie jest pusty -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Główny układ pionowy strony z odstępami i paddingiem -->
+    <VerticalStackLayout Spacing="15" Padding="20">
+        <!-- Nagłówek strony -->
+        <Label 
+            Text="Edytuj Profil"
+            FontSize="Title"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <!-- Ramka z polem do edycji nazwy użytkownika -->
+        <Frame Padding="15" CornerRadius="8" BorderColor="LightGray">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Nazwa użytkownika:" />
+                <Entry Text="{Binding Username}" Placeholder="Wprowadź nazwę użytkownika" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Wyświetlanie błędów walidacji (jeśli występują) -->
+        <Label Text="{Binding ValidationErrors}" 
+               TextColor="Red" 
+               IsVisible="{Binding ValidationErrors, Converter={StaticResource StringToBoolConverter}}"/>
+
+        <!-- Przycisk do zapisania zmian w profilu -->
+        <Button 
+            Text="Zapisz Zmiany" 
+            Command="{Binding SaveProfileCommand}"
+            HorizontalOptions="Fill" />
+    </VerticalStackLayout>
+</ContentPage>

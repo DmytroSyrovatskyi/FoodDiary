@@ -1,0 +1,41 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:models="clr-namespace:FoodDiary.Models"
+             x:Class="FoodDiary.Views.FoodItemReportPage"
+             x:DataType="viewModels:FoodItemReportViewModel"
+             Title="Raport: Produkty Spożywcze">
+
+    <!-- Główny układ siatki: pierwszy wiersz na pasek wyszukiwania, drugi na listę wyników -->
+    <Grid RowDefinitions="Auto, *">
+        <!-- Pasek wyszukiwania produktów po nazwie -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Wyszukaj produkt po nazwie..."
+                   Text="{Binding SearchTerm}"
+                   SearchCommand="{Binding SearchCommand}" />
+
+        <!-- Lista wyników wyszukiwania produktów spożywczych -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding SearchResults}">
+            <!-- Widok pusty, gdy nie ma wyników wyszukiwania -->
+            <CollectionView.EmptyView>
+                <Label Padding="20" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray"
+                       Text="Brak wyników."/>
+            </CollectionView.EmptyView>
+            <!-- Szablon pojedynczego produktu w raporcie -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:FoodItem">
+                    <Frame Padding="10" Margin="10,5" CornerRadius="8">
+                        <StackLayout>
+                            <!-- Nazwa produktu (pogrubiona) -->
+                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                            <!-- Nazwa kategorii produktu (kursywa, szary kolor) -->
+                            <Label Text="{Binding Category.Name}" FontSize="Small" TextColor="Gray" FontAttributes="Italic" />
+                            <!-- Podsumowanie wartości odżywczych -->
+                            <Label Text="{Binding NutritionSummary}" FontSize="Micro" />
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

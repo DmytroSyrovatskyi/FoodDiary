@@ -1,0 +1,62 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:models="clr-namespace:FoodDiary.Models"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.FoodItemsPage"
+             x:DataType="viewModels:FoodItemsViewModel"
+             Title="Produkty Spożywcze">
+
+    <!-- Słownik zasobów z konwerterami do wiązań danych -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Główny układ siatki: nagłówek i lista produktów -->
+    <Grid RowDefinitions="Auto, *" Padding="10" RowSpacing="10">
+        <!-- Pasek tytułu i przycisk dodawania produktu -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Label Text="Lista Produktów" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center"/>
+            <Button Text="Dodaj Produkt" Command="{Binding AddFoodItemCommand}" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Wskaźnik ładowania podczas pobierania danych -->
+        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" />
+
+        <!-- Lista produktów spożywczych -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding FoodItems}" SelectionMode="None" IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
+            <!-- Widok pusty, gdy nie ma produktów do wyświetlenia -->
+            <CollectionView.EmptyView>
+                <Label Text="Brak produktów do wyświetlenia." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray"/>
+            </CollectionView.EmptyView>
+            <!-- Szablon pojedynczego produktu -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:FoodItem">
+                    <Frame Padding="10" Margin="0,5" CornerRadius="8" BorderColor="LightGray" HasShadow="True">
+                        <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                            <!-- Dane produktu: nazwa, kategoria, wartości odżywcze -->
+                            <StackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold" />
+                                
+                                <Label Text="{Binding Category.Name}" FontSize="Small" TextColor="Gray" FontAttributes="Italic" />
+
+                                <Label Text="{Binding NutritionSummary}" FontSize="Small" />
+                            </StackLayout>
+                            <!-- Przycisk do usuwania produktu -->
+                            <Button Grid.Column="1"
+                                    Text="Usuń"
+                                    BackgroundColor="Red"
+                                    TextColor="White"
+                                    VerticalOptions="Center"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:FoodItemsViewModel}}, Path=DeleteFoodItemCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,45 @@
+<!--
+    Główny plik nawigacji aplikacji MAUI (Shell).
+    Definiuje strukturę zakładek i tras w aplikacji "Mój Dziennik Żywieniowy".
+-->
+
+<Shell
+    x:Class="FoodDiary.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FoodDiary"
+    xmlns:views="clr-namespace:FoodDiary.Views"
+    Shell.FlyoutBehavior="Disabled"
+    Title="Mój Dziennik Żywieniowy">
+
+    <!-- Pasek zakładek na dole aplikacji -->
+    <TabBar>
+        <!-- Zakładka: Mój Dzień (strona główna z podsumowaniem dnia) -->
+        <ShellContent
+            Title="Mój Dzień"
+            Icon="home_icon.png" 
+            ContentTemplate="{DataTemplate views:MyDayPage}" 
+            Route="MyDayPage" />
+
+        <!-- Zakładka: Produkty (lista produktów spożywczych) -->
+        <ShellContent
+            Title="Produkty"
+            Icon="food_icon.png" 
+            ContentTemplate="{DataTemplate views:FoodItemsPage}"
+            Route="FoodItemsPage" />
+
+        <!-- Zakładka: Profil użytkownika -->
+        <ShellContent
+            Title="Profil"
+            Icon="user_icon.png"
+            ContentTemplate="{DataTemplate views:ProfilePage}"
+            Route="ProfilePage" />
+
+        <!-- Zakładka: Raporty (raporty i statystyki) -->
+        <ShellContent
+            Title="Raporty"
+            Icon="report_icon.png"
+            ContentTemplate="{DataTemplate views:ReportsPage}"
+            Route="ReportsPage" />
+    </TabBar>
+</Shell>

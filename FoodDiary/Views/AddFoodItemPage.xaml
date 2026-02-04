@@ -1,0 +1,91 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             xmlns:behaviors="clr-namespace:FoodDiary.Behaviors" 
+             x:Class="FoodDiary.Views.AddFoodItemPage"
+             x:DataType="viewModels:AddFoodItemViewModel"
+             Title="Dodaj Produkt Spożywczy">
+
+    <!-- Słownik zasobów z konwerterami do wiązań danych -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <!-- Główny układ pionowy z odstępami i paddingiem -->
+        <VerticalStackLayout Spacing="10" Padding="20">
+            <!-- Nagłówek strony -->
+            <Label Text="Nowy Produkt Spożywczy" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+            <!-- Ramka z polami formularza -->
+            <Frame Padding="15" Margin="0,10" CornerRadius="8" BorderColor="LightGray">
+                <VerticalStackLayout Spacing="8">
+                    <!-- Pole: nazwa produktu -->
+                    <Label Text="Nazwa produktu:" />
+                    <Entry Text="{Binding Name}" Placeholder="np. Jogurt naturalny" />
+
+                    <!-- Pole: kalorie -->
+                    <Label Text="Kalorie (na 100g/ml lub 1 szt.):" Margin="0,5,0,0" />
+                    <Entry Text="{Binding Calories}" Keyboard="Numeric" Placeholder="np. 60">
+                        <!-- Walidacja: tylko liczby i przecinek -->
+                        <Entry.Behaviors>
+                            <behaviors:NumericValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <!-- Pole: białko -->
+                    <Label Text="Białko (g na 100g/ml lub 1 szt.):" Margin="0,5,0,0" />
+                    <Entry Text="{Binding Protein}" Keyboard="Numeric" Placeholder="np. 3.5">
+                        <Entry.Behaviors>
+                            <behaviors:NumericValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <!-- Pole: tłuszcz -->
+                    <Label Text="Tłuszcz (g na 100g/ml lub 1 szt.):" Margin="0,5,0,0" />
+                    <Entry Text="{Binding Fat}" Keyboard="Numeric" Placeholder="np. 2.0">
+                        <Entry.Behaviors>
+                            <behaviors:NumericValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <!-- Pole: węglowodany -->
+                    <Label Text="Węglowodany (g na 100g/ml lub 1 szt.):" Margin="0,5,0,0" />
+                    <Entry Text="{Binding Carbohydrates}" Keyboard="Numeric" Placeholder="np. 4.5">
+                        <Entry.Behaviors>
+                            <behaviors:NumericValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <!-- Wybór jednostki porcji -->
+                    <Label Text="Jednostka:" Margin="0,5,0,0" />
+                    <Picker Title="Wybierz jednostkę"
+                            ItemsSource="{Binding AvailableUnits}"
+                            SelectedItem="{Binding ServingUnit}" />
+
+                    <!-- Wybór kategorii produktu (opcjonalnie) -->
+                    <Label Text="Kategoria:" Margin="0,5,0,0" />
+                    <Picker Title="Wybierz kategorię (opcjonalnie)"
+                            ItemsSource="{Binding AvailableCategories}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedCategory}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Wyświetlanie błędów walidacji (jeśli występują) -->
+            <Label Text="{Binding ValidationErrors}" TextColor="Red" IsVisible="{Binding ValidationErrors, Converter={StaticResource StringToBoolConverter}}"
+                   Margin="0,5,0,10" HorizontalTextAlignment="Center"/>
+
+            <!-- Wskaźnik ładowania podczas zapisu produktu -->
+            <ActivityIndicator IsRunning="{Binding IsSaving}" IsVisible="{Binding IsSaving}" HorizontalOptions="Center" Margin="0,5,0,0"/>
+
+            <!-- Przycisk do zapisania produktu -->
+            <Button Text="Zapisz Produkt" Command="{Binding SaveCommand}" IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                    HorizontalOptions="Fill" Margin="0,10,0,0" BackgroundColor="DarkGreen" TextColor="White" HeightRequest="45" CornerRadius="8"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

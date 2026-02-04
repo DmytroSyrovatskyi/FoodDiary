@@ -1,0 +1,55 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.AddProductToMealPage"
+             x:DataType="viewModels:AddProductToMealViewModel"
+             Title="Dodaj produkt do posiłku">
+
+    <!-- Słownik zasobów z konwerterem do odwracania wartości logicznej -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Główny układ pionowy strony z odstępami i paddingiem -->
+    <VerticalStackLayout Spacing="15" Padding="20" VerticalOptions="Center">
+        <!-- Nagłówek strony -->
+        <Label 
+            Text="Wybierz produkt"
+            FontSize="Title"
+            FontAttributes="Bold"
+            HorizontalOptions="Center" />
+
+        <!-- Ramka z wyborem produktu spożywczego -->
+        <Frame Padding="10" CornerRadius="8" Margin="0,10" BorderColor="LightGray">
+            <Picker 
+                Title="Produkt"
+                ItemsSource="{Binding AvailableFoodItems}"
+                SelectedItem="{Binding SelectedFoodItem}"
+                ItemDisplayBinding="{Binding Name}" />
+        </Frame>
+
+        <!-- Pole do wprowadzenia ilości produktu -->
+        <Label Text="Ilość (w gramach):" />
+        <Entry 
+            Text="{Binding Quantity}" 
+            Keyboard="Numeric"
+            Placeholder="100" />
+
+        <!-- Wskaźnik ładowania podczas zapisu produktu do posiłku -->
+        <ActivityIndicator IsRunning="{Binding IsSaving}" IsVisible="{Binding IsSaving}" HorizontalOptions="Center" />
+
+        <!-- Przycisk do dodania produktu do posiłku -->
+        <Button 
+            Text="Dodać"
+            Command="{Binding SaveCommand}"
+            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+            HorizontalOptions="Fill"
+            Margin="0,10,0,0"
+            HeightRequest="45"
+            CornerRadius="8" />
+
+    </VerticalStackLayout>
+</ContentPage>

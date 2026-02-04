@@ -1,0 +1,72 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:FoodDiary.ViewModels"
+             xmlns:models="clr-namespace:FoodDiary.Models"
+             xmlns:converters="clr-namespace:FoodDiary.Converters"
+             x:Class="FoodDiary.Views.MealDetailsPage"
+             x:DataType="viewModels:MealDetailsViewModel"
+             Title="Szczegóły Posiłku">
+
+    <!-- Słownik zasobów z konwerterem do odwracania wartości logicznej -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Główny układ strony: nagłówek, lista produktów i przycisk dodawania -->
+        <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="15"
+              IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}">
+
+            <!-- Nagłówek z typem posiłku -->
+            <Label Grid.Row="0"
+                   Text="{Binding CurrentMeal.Type, StringFormat='Produkty w: {0}'}"
+                   FontSize="Title"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Lista produktów w posiłku -->
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Entries}">
+                <!-- Widok pusty, gdy nie ma produktów w posiłku -->
+                <CollectionView.EmptyView>
+                    <Label Text="W tym posiłku nie ma jeszcze produktów." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <!-- Szablon pojedynczego produktu w posiłku -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:MealEntry">
+                        <Frame Padding="10" Margin="0,5" CornerRadius="8" BorderColor="LightGray">
+                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                <!-- Dane produktu: nazwa i ilość -->
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Text="{Binding FoodItem.Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Quantity, StringFormat='{0}g'}" FontSize="Small" TextColor="DarkGray" />
+                                </VerticalStackLayout>
+                                <!-- Przycisk do usuwania produktu z posiłku -->
+                                <Button Grid.Column="1"
+                                        Text="Usuń"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        VerticalOptions="Center"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MealDetailsViewModel}}, Path=DeleteEntryCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Przycisk do dodania nowego produktu do posiłku -->
+            <Button Grid.Row="2"
+                    Text="Dodaj Produkt" 
+                    Command="{Binding AddProductToMealCommand}" 
+                    HorizontalOptions="Fill"/>
+        </Grid>
+
+        <!-- Wskaźnik ładowania podczas pobierania szczegółów posiłku -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>
